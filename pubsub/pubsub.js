@@ -16,7 +16,7 @@ function PubSub(){
  */
 PubSub.prototype.subscribe = function(eventName, handler) {
 
-    if(typeof this._globalHandlers[eventName] === 'undefined') this._globalHandlers[eventName] = [];
+    if(!this._globalHandlers[eventName]) this._globalHandlers[eventName] = [];
 
     this._globalHandlers[eventName].push(handler);
     return handler;
@@ -32,7 +32,7 @@ PubSub.prototype.unsubscribe = function(eventName, handler) {
     var eventHandlers = this._globalHandlers[eventName],
         currentHandlerIndex;
 
-    if(typeof eventHandlers === 'undefined') throw new Error('No such Event');
+    if(!eventHandlers) throw new Error('No such Event');
 
     currentHandlerIndex = eventHandlers.indexOf(handler);
 
@@ -51,7 +51,7 @@ PubSub.prototype.unsubscribe = function(eventName, handler) {
 PubSub.prototype.publish = function(eventName, data) {
     var eventHandlers = this._globalHandlers[eventName];
 
-    if(typeof eventHandlers === 'undefined' || eventHandlers.length === 0)
+    if(!eventHandlers || eventHandlers.length === 0)
         return false;
 
     eventHandlers.forEach(function(handler){
@@ -67,7 +67,7 @@ PubSub.prototype.publish = function(eventName, data) {
  * @return {boolean}             удачен ли результат операции
  */
 PubSub.prototype.off = function(eventName) {
-    if(typeof this._globalHandlers[eventName] === 'undefined')
+    if(!this._globalHandlers[eventName])
         return false;
 
     this._globalHandlers[eventName] = undefined;
