@@ -6,25 +6,6 @@ function PubSub(){
     'use strict';
 
     this._globalHandlers = {};
-
-    /**
-     * Функция для определения наличия handler функции
-     * @param  {string} eventName имя события
-     * @param  {function} handler функция которая будет вызвана при возникновении события
-     * @return {int}         индекс найденого элемента или -1 в случае провала поиска
-     */
-    this._isExist = function(eventName, handler){
-        var flag = 0,
-            eventHandlers = this._globalHandlers[eventName];
-
-        for(flag; flag < eventHandlers.length; flag++){
-            /* Comparing the functions by conversion to String (adding '' or call toString method) */
-            if('' + eventHandlers[flag] === '' + handler)
-                return flag;
-        }
-
-        return -1;
-    }
 };
 
 /**
@@ -53,7 +34,7 @@ PubSub.prototype.unsubscribe = function(eventName, handler) {
 
     if(typeof eventHandlers === 'undefined') throw new Error('No such Event');
 
-    currentHandlerIndex = this._isExist(eventName, handler);
+    currentHandlerIndex = eventHandlers.indexOf(handler);
 
     if(currentHandlerIndex === -1)  throw new Error('No such Handler');
 
@@ -117,9 +98,5 @@ Function.prototype.unsubscribe = function(eventName, handler){
 
 Function.prototype.publish = function(eventName, data){
     return this.pubSub.publish.call(this.pubSub, eventName, data);
-};
-
-Function.prototype.off = function(eventName){
-    return this.pubSub.off.call(this.pubSub, eventName);
 };
 
